@@ -1,31 +1,24 @@
 {
-  "name": "ai-news",
-  "version": "1.0.0",
-  "nodeVersion": "20",
-  "workspaceRoot": ".",
-  "commands": {
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
     "dev": {
-      "command": "npm",
-      "args": ["run", "dev"],
+      "template": "npm run dev",
       "description": "Start development server (Vite)"
     },
     "build": {
-      "command": "npm",
-      "args": ["run", "build"],
+      "template": "npm run build",
       "description": "Build for production (Cloudflare Pages)"
     },
     "preview": {
-      "command": "npm",
-      "args": ["run", "preview"],
+      "template": "npm run preview",
       "description": "Preview production build"
     },
     "install": {
-      "command": "npm",
-      "args": ["install"],
+      "template": "npm install",
       "description": "Install dependencies"
     }
   },
-  "mcpServers": {
+  "mcp": {
     "supabase": {
       "type": "remote",
       "url": "https://mcp.supabase.com/mcp?project_ref=btebbnwvdxishilssfnw",
