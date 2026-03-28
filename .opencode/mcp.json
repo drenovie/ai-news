@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "supabase-ai-news": {
-      "command": "npx",
-      "args": ["@supabase/mcp-server-supabase", "--access-token", "${SUPABASE_ACCESS_TOKEN}"]
-    }
-  }
-}
