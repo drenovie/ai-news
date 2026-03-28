@@ -29,10 +29,11 @@
       "description": "Install dependencies"
     }
   },
-  "mcpServers": {
-    "supabase-ai-news": {
-      "command": "npx",
-      "args": ["@supabase/mcp-server-supabase", "--access-token", "${SUPABASE_ACCESS_TOKEN}"]
+  "mcp": {
+    "supabase": {
+      "type": "remote",
+      "url": "https://mcp.supabase.com/mcp?project_ref=btebbnwvdxishilssfnw",
+      "enabled": true
     }
   }
 }
