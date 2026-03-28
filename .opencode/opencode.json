@@ -29,7 +29,7 @@
       "description": "Install dependencies"
     }
   },
-  "mcp": {
+  "mcpServers": {
     "supabase": {
       "type": "remote",
       "url": "https://mcp.supabase.com/mcp?project_ref=btebbnwvdxishilssfnw",
