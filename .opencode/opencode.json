@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "nodeVersion": "20",
   "workspaceRoot": ".",
-  "env": {
-    "VITE_SUPABASE_URL": "",
-    "VITE_SUPABASE_ANON_KEY": ""
-  },
   "commands": {
     "dev": {
       "command": "npm",
