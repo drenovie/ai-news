@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "supabase-ai-news": {
+      "command": "npx",
+      "args": ["@supabase/mcp-server", "--access-token", "${SUPABASE_SERVICE_ROLE_KEY}"],
+      "env": {
+        "SUPABASE_DB_CONNECTION": "postgresql://postgres:[PASSWORD]@db.your-project.supabase.co:5432/postgres?sslmode=require"
+      }
+    }
+  }
+}

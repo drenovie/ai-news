@@ -1,0 +1,32 @@
+{
+  "name": "ai-news",
+  "version": "1.0.0",
+  "nodeVersion": "20",
+  "workspaceRoot": ".",
+  "env": {
+    "VITE_SUPABASE_URL": "",
+    "VITE_SUPABASE_ANON_KEY": ""
+  },
+  "commands": {
+    "dev": {
+      "command": "npm",
+      "args": ["run", "dev"],
+      "description": "Start development server (Vite)"
+    },
+    "build": {
+      "command": "npm",
+      "args": ["run", "build"],
+      "description": "Build for production (Cloudflare Pages)"
+    },
+    "preview": {
+      "command": "npm",
+      "args": ["run", "preview"],
+      "description": "Preview production build"
+    },
+    "install": {
+      "command": "npm",
+      "args": ["install"],
+      "description": "Install dependencies"
+    }
+  }
+}

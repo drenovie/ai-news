@@ -1,0 +1,33 @@
+{
+  "name": "ai-news-supabase",
+  "description": "Supabase integration for AI News project",
+  "config": [
+    {
+      "key": "SUPABASE_URL",
+      "type": "string",
+      "description": "Supabase project URL (e.g., https://xyz.supabase.co)"
+    },
+    {
+      "key": "SUPABASE_SERVICE_ROLE_KEY",
+      "type": "password",
+      "description": "Supabase service role key"
+    }
+  ],
+  "commands": {
+    "videos": {
+      "command": "node",
+      "args": [".opencode/integrations/query-readonly.js", "SELECT * FROM videos ORDER BY published_at DESC LIMIT 5"],
+      "description": "Show latest videos"
+    },
+    "news": {
+      "command": "node",
+      "args": [".opencode/integrations/query-readonly.js", "SELECT * FROM news_items ORDER BY published_at DESC LIMIT 5"],
+      "description": "Show latest news items"
+    },
+    "check-schema": {
+      "command": "node",
+      "args": [".opencode/integrations/check-schema.js"],
+      "description": "Verify Supabase schema"
+    }
+  }
+}

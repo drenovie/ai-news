@@ -1,0 +1,1 @@
+ALTER TABLE public.videos ADD COLUMN embeddable boolean NOT NULL DEFAULT true;
