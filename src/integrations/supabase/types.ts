@@ -16,7 +16,6 @@ export type Database = {
     Tables: {
       articles: {
         Row: {
-          club_ids: string[] | null
           content: string | null
           created_at: string
           feed_id: string | null
@@ -31,7 +30,6 @@ export type Database = {
           title: string
         }
         Insert: {
-          club_ids?: string[] | null
           content?: string | null
           created_at?: string
           feed_id?: string | null
@@ -46,7 +44,6 @@ export type Database = {
           title: string
         }
         Update: {
-          club_ids?: string[] | null
           content?: string | null
           created_at?: string
           feed_id?: string | null
@@ -70,93 +67,8 @@ export type Database = {
           },
         ]
       }
-      clubs: {
-        Row: {
-          city: string
-          color: string
-          created_at: string
-          id: string
-          league: string
-          name: string
-          season: string
-          short_name: string
-          updated_at: string
-        }
-        Insert: {
-          city: string
-          color: string
-          created_at?: string
-          id: string
-          league: string
-          name: string
-          season?: string
-          short_name: string
-          updated_at?: string
-        }
-        Update: {
-          city?: string
-          color?: string
-          created_at?: string
-          id?: string
-          league?: string
-          name?: string
-          season?: string
-          short_name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      league_standings: {
-        Row: {
-          club_id: string | null
-          drawn: number
-          goal_difference: number
-          goals_against: number
-          goals_for: number
-          id: string
-          lost: number
-          played: number
-          points: number
-          position: number
-          team: string
-          updated_at: string
-          won: number
-        }
-        Insert: {
-          club_id?: string | null
-          drawn?: number
-          goal_difference?: number
-          goals_against?: number
-          goals_for?: number
-          id?: string
-          lost?: number
-          played?: number
-          points?: number
-          position: number
-          team: string
-          updated_at?: string
-          won?: number
-        }
-        Update: {
-          club_id?: string | null
-          drawn?: number
-          goal_difference?: number
-          goals_against?: number
-          goals_for?: number
-          id?: string
-          lost?: number
-          played?: number
-          points?: number
-          position?: number
-          team?: string
-          updated_at?: string
-          won?: number
-        }
-        Relationships: []
-      }
       rss_feeds: {
         Row: {
-          club_ids: string[] | null
           created_at: string
           id: string
           is_active: boolean
@@ -165,7 +77,6 @@ export type Database = {
           url: string
         }
         Insert: {
-          club_ids?: string[] | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -174,7 +85,6 @@ export type Database = {
           url: string
         }
         Update: {
-          club_ids?: string[] | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -184,46 +94,9 @@ export type Database = {
         }
         Relationships: []
       }
-      site_stats: {
-        Row: {
-          id: string
-          visitor_count: number
-        }
-        Insert: {
-          id?: string
-          visitor_count?: number
-        }
-        Update: {
-          id?: string
-          visitor_count?: number
-        }
-        Relationships: []
-      }
-      user_club_preferences: {
-        Row: {
-          club_id: string
-          created_at: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          club_id: string
-          created_at?: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          club_id?: string
-          created_at?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       video_channels: {
         Row: {
           channel_id: string
-          club_ids: string[] | null
           created_at: string
           id: string
           is_active: boolean
@@ -234,7 +107,6 @@ export type Database = {
         }
         Insert: {
           channel_id: string
-          club_ids?: string[] | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -245,7 +117,6 @@ export type Database = {
         }
         Update: {
           channel_id?: string
-          club_ids?: string[] | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -259,7 +130,6 @@ export type Database = {
       videos: {
         Row: {
           channel_id: string | null
-          club_ids: string[] | null
           created_at: string
           description: string | null
           embeddable: boolean
@@ -272,7 +142,6 @@ export type Database = {
         }
         Insert: {
           channel_id?: string | null
-          club_ids?: string[] | null
           created_at?: string
           description?: string | null
           embeddable?: boolean
@@ -285,7 +154,6 @@ export type Database = {
         }
         Update: {
           channel_id?: string | null
-          club_ids?: string[] | null
           created_at?: string
           description?: string | null
           embeddable?: boolean
@@ -311,26 +179,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      add_rss_feed: {
-        Args: {
-          p_club_ids?: string[]
-          p_is_active?: boolean
-          p_name: string
-          p_url: string
-        }
-        Returns: string
-      }
-      add_video_channel: {
-        Args: {
-          p_channel_id: string
-          p_club_ids?: string[]
-          p_is_active?: boolean
-          p_name: string
-          p_title_filter?: string
-          p_url: string
-        }
-        Returns: string
-      }
+      add_rss_feed:
+        | {
+            Args: { p_is_active?: boolean; p_name: string; p_url: string }
+            Returns: string
+          }
+      add_video_channel:
+        | {
+            Args: {
+              p_channel_id: string
+              p_is_active?: boolean
+              p_name: string
+              p_title_filter?: string
+              p_url: string
+            }
+            Returns: string
+          }
       increment_visitor_count: { Args: never; Returns: number }
     }
     Enums: {

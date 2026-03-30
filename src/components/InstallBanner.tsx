@@ -20,12 +20,12 @@ export function InstallBanner() {
           </button>
 
           <div className="flex items-start gap-3 pr-6">
-            <div className="shrink-0 w-10 h-10 rounded-lg bg-italia-green/10 flex items-center justify-center">
-              <Download className="h-5 w-5 text-italia-green" />
+            <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Download className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-heading font-bold text-sm text-foreground">
-                Install Italia Kick
+                Install AI News
               </p>
               {isIOS ? (
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
@@ -43,7 +43,7 @@ export function InstallBanner() {
             <Button
               onClick={install}
               size="sm"
-              className="w-full mt-3 bg-italia-green hover:bg-italia-green/90 text-white font-nav font-bold uppercase tracking-wider text-xs"
+              className="w-full mt-3 bg-primary hover:bg-primary/90 text-white font-nav font-bold uppercase tracking-wider text-xs"
             >
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Install App

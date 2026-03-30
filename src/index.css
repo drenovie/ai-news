@@ -4,25 +4,79 @@
 
 @layer base {
   :root {
-    --background: 230 25% 6%;
-    --foreground: 210 40% 96%;
-    --card: 230 20% 9%;
-    --card-foreground: 210 40% 96%;
-    --primary: 262 83% 65%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 230 18% 14%;
-    --secondary-foreground: 210 40% 96%;
-    --muted: 230 18% 16%;
-    --muted-foreground: 220 10% 55%;
-    --accent: 262 60% 55%;
-    --accent-foreground: 0 0% 100%;
-    --border: 230 18% 20%;
+    /* Base Colors from Sample */
+    --color-sand-25: 34 33% 98%;
+    --color-sand-50: 34 33% 96%;
+    --color-sand-100: 25 33% 94%;
+    --color-sand-200: 25 33% 91%;
+    --color-bark-900: 343 79% 8%;
+    --color-bark-700: 343 20% 30%;
+    --color-bark-300: 343 25% 75%;
+    --color-bark-200: 343 15% 85%;
+    --color-forest-700: 128 39% 28%;
+    --color-forest-600: 128 30% 36%;
+    --color-base-white: 0 0% 100%;
+
+    /* Shadcn Mapping */
+    --background: var(--color-sand-25);
+    --foreground: var(--color-bark-900);
+    --card: var(--color-sand-50);
+    --card-foreground: var(--color-bark-900);
+    --popover: var(--color-sand-50);
+    --popover-foreground: var(--color-bark-900);
+    --primary: 127 39% 28%; /* #2c6333 */
+    --primary-foreground: var(--color-base-white);
+    --primary-hover: 343 79% 8%; /* #25040d */
+    --secondary: var(--color-sand-200);
+    --secondary-foreground: var(--color-bark-900);
+    --muted: var(--color-sand-100);
+    --muted-foreground: var(--color-bark-700);
+    --accent: var(--color-forest-600);
+    --accent-foreground: var(--color-base-white);
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: var(--color-bark-200);
+    --input: var(--color-bark-200);
+    --ring: var(--color-forest-700);
     --radius: 0.75rem;
+
+    /* Spacing & Layout Tokens */
+    --spacing-global: 1.5rem;
+    --spacing-section-md: 4rem;
+    --spacing-section-sm: 2rem;
   }
 }
 
-body { background: hsl(var(--background)); color: hsl(var(--foreground)); }
+body { 
+  background-color: hsl(var(--background)); 
+  color: hsl(var(--foreground));
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
-.video-card { @apply bg-card rounded-xl overflow-hidden border border-border hover:border-accent transition-colors; }
-.video-grid { @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4; }
-.source-badge { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-muted-foreground; }
+.video-card { 
+  @apply bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-bark-900/5; 
+}
+
+.video-grid { 
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6; 
+}
+
+.source-badge { 
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-widest uppercase bg-secondary text-muted-foreground border border-border/50; 
+}
+
+/* Custom Utilities for centered layout */
+.px-global {
+  padding-inline: var(--spacing-global);
+}
+
+.py-section-md {
+  padding-block: var(--spacing-section-md);
+}
+
+@media (min-width: 768px) {
+  .px-global {
+    padding-inline: var(--spacing-section-sm);
+  }
+}

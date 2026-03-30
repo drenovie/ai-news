@@ -70,6 +70,10 @@ function extractLink(itemXml: string): string {
   return extractText(itemXml, "link");
 }
 
+function extractComments(itemXml: string): string {
+  return extractText(itemXml, "comments");
+}
+
 /**
  * Fetch the og:image meta tag from a URL as a fallback image source.
  * Times out after 5 seconds. Returns empty string on any failure.
@@ -80,7 +84,7 @@ async function fetchOgImage(url: string): Promise<string> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(url, {
-      headers: { "User-Agent": "KickItalia-RSS/1.0" },
+      headers: { "User-Agent": "AI-News-RSS/1.0" },
       signal: controller.signal,
       redirect: "follow",
     });
@@ -114,68 +118,44 @@ function stripSmartFrameEmbeds(html: string): string {
   return cleaned;
 }
 
-// Extra aliases for popular clubs beyond name/short_name
-const EXTRA_ALIASES: Record<string, string> = {
-  "rossoneri": "milan",
-  "nerazzurri": "inter",
-  "bianconeri": "juventus",
-  "juve": "juventus",
-  "giallorossi": "roma",
-  "viola": "fiorentina",
-  "partenopei": "napoli",
-  "biancocelesti": "lazio",
-  "blucerchiati": "sampdoria",
-  "granata": "torino",
-  "zebrette": "udinese",
-  "la dea": "atalanta",
-  "ac milan": "milan",
-  "as roma": "roma",
-  "inter milan": "inter",
-  "fc inter": "inter",
-  "hellas verona": "verona",
-  "hellas": "verona",
-};
-
-interface ClubAlias {
-  term: string;
-  clubId: string;
-}
-
-function buildAliasMap(
-  clubs: { id: string; name: string; short_name: string; city: string }[]
-): ClubAlias[] {
-  const aliases: ClubAlias[] = [];
-  for (const c of clubs) {
-    aliases.push({ term: c.name.toLowerCase(), clubId: c.id });
-    if (c.short_name.length > 2) {
-      aliases.push({ term: c.short_name.toLowerCase(), clubId: c.id });
+/**
+ * Basic scraper to fetch full content from a URL if the RSS feed only provides a stub.
+ */
+async function fetchFullContent(url: string): Promise<string> {
+  if (!url || url.includes("news.ycombinator.com/item?id=")) return "";
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
+    const res = await fetch(url, {
+      headers: { "User-Agent": "AI-News-Scraper/1.0" },
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return "";
+    const html = await res.text();
+    
+    // Substack specific extraction
+    if (url.includes("substack.com")) {
+      const substackMatch = html.match(/<div[^>]+class="[^"]*body[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
+                           html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+      if (substackMatch) return substackMatch[1];
     }
-    aliases.push({ term: c.id.toLowerCase(), clubId: c.id });
-  }
-  for (const [alias, clubId] of Object.entries(EXTRA_ALIASES)) {
-    aliases.push({ term: alias, clubId });
-  }
-  aliases.sort((a, b) => b.term.length - a.term.length);
-  return aliases;
-}
 
-function detectClubs(
-  title: string,
-  feedClubIds: string[],
-  aliases: ClubAlias[]
-): string[] {
-  if (feedClubIds && feedClubIds.length > 0) return feedClubIds;
-  const found = new Set<string>();
-  const lower = title.toLowerCase();
-  for (const { term, clubId } of aliases) {
-    if (term.length <= 3) {
-      const regex = new RegExp(`\\b${term}\\b`, "i");
-      if (regex.test(lower)) found.add(clubId);
-    } else {
-      if (lower.includes(term)) found.add(clubId);
+    // General heuristic: look for <article>
+    const articleMatch = html.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+    if (articleMatch) return articleMatch[1];
+    
+    // Fallback: collect significant paragraph blocks
+    const paragraphs = html.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
+    if (paragraphs && paragraphs.length > 5) {
+      // Return first 15 paragraphs to avoid massive payloads while getting the meat
+      return paragraphs.slice(0, 15).join("");
     }
+    
+    return "";
+  } catch {
+    return "";
   }
-  return [...found];
 }
 
 Deno.serve(async (req) => {
@@ -201,18 +181,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { data: clubRows } = await supabase
-      .from("clubs")
-      .select("id, name, short_name, city");
-    const aliases = buildAliasMap(clubRows || []);
-
     let totalSynced = 0;
     const errors: string[] = [];
 
     for (const feed of feeds) {
       try {
         const response = await fetch(feed.url, {
-          headers: { "User-Agent": "KickItalia-RSS/1.0" },
+          headers: { "User-Agent": "AI-News-RSS/1.0" },
         });
         if (!response.ok) {
           errors.push(`${feed.name}: HTTP ${response.status}`);
@@ -230,13 +205,23 @@ Deno.serve(async (req) => {
           if (/liveblog/i.test(title)) continue;
 
           const description = extractText(itemXml, "description");
-          const contentEncoded = extractText(itemXml, "content:encoded");
+          const contentEncoded = extractText(itemXml, "content:encoded") || extractText(itemXml, "content");
           const rawContent = contentEncoded || description;
+          
           // Strip SmartFrame embeds from content
-          const content = rawContent ? stripSmartFrameEmbeds(rawContent) : "";
-          const snippet = description
-            ? description.replace(/<[^>]+>/g, "").slice(0, 200)
-            : content?.replace(/<[^>]+>/g, "").slice(0, 200) || "";
+          let content = rawContent ? stripSmartFrameEmbeds(rawContent) : "";
+          
+          // SCRAPER LOGIC: If content is just an HN comments link or very short, try fetching the actual page
+          if (feed.name === "Hacker News" || (content.length < 300 && sourceUrl)) {
+            const fullContent = await fetchFullContent(sourceUrl);
+            if (fullContent && fullContent.length > content.length) {
+              content = fullContent;
+            }
+          }
+          
+          // Better snippet logic: use description if available, otherwise strip HTML from content
+          const cleanDescription = description ? description.replace(/<[^>]+>/g, "").trim() : "";
+          const snippet = cleanDescription || content?.replace(/<[^>]+>/g, "").slice(0, 300).trim() || "";
 
           const pubDateStr =
             extractText(itemXml, "pubDate") ||
@@ -247,6 +232,7 @@ Deno.serve(async (req) => {
             : new Date().toISOString();
 
           const sourceUrl = extractLink(itemXml);
+          const commentsUrl = extractComments(itemXml);
           let imageUrl = extractImage(itemXml);
 
           // OG image fallback: if no image found in RSS, try fetching og:image from source
@@ -257,18 +243,16 @@ Deno.serve(async (req) => {
           const slug =
             slugify(title) + "-" + guid.slice(-6).replace(/[^a-z0-9]/gi, "");
 
-          const clubIds = detectClubs(title, feed.club_ids || [], aliases);
-
           articles.push({
             slug,
             title,
             snippet,
-            content: content?.slice(0, 5000) || "",
+            content: content?.slice(0, 10000) || "",
             source: feed.name,
             source_url: sourceUrl,
+            source_item_url: commentsUrl || null,
             image_url: imageUrl || null,
             published_at: publishedAt,
-            club_ids: clubIds,
             feed_id: feed.id,
             guid,
           });
@@ -277,7 +261,7 @@ Deno.serve(async (req) => {
         if (articles.length > 0) {
           const { error: upsertError } = await supabase
             .from("articles")
-            .upsert(articles, { onConflict: "guid", ignoreDuplicates: true });
+            .upsert(articles, { onConflict: "guid" }); // Removed ignoreDuplicates: true to allow updating content
 
           if (upsertError) {
             errors.push(

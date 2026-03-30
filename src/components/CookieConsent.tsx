@@ -40,12 +40,12 @@ export function CookieConsent() {
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="bg-muted rounded-lg p-2">
-              <Cookie className="h-5 w-5 text-italia-red" />
+              <Cookie className="h-5 w-5 text-primary" />
             </div>
           </div>
 
           <p className="text-xs md:text-sm text-muted-foreground leading-relaxed pr-6 sm:pr-0">
-            We use cookies to enhance your experience. Video highlights are embedded from YouTube, which may set tracking cookies.
+            We use cookies to enhance your experience. Video content is embedded from YouTube, which may set tracking cookies.
             By continuing, you agree to our use of cookies.
           </p>
 
@@ -53,7 +53,7 @@ export function CookieConsent() {
             <Button
               onClick={accept}
               size="sm"
-              className="bg-italia-red hover:bg-italia-red/90 text-white font-nav text-xs uppercase tracking-wider flex-1 sm:flex-initial"
+              className="bg-primary hover:bg-primary/90 text-white font-nav text-xs uppercase tracking-wider flex-1 sm:flex-initial"
             >
               Accept
             </Button>

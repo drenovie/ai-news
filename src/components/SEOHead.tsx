@@ -14,9 +14,8 @@ interface SEOHeadProps {
   thumbnailUrl?: string;
 }
 
-const SITE_NAME = "Italia Kick";
-const DEFAULT_IMAGE =
-  "https://storage.googleapis.com/gpt-engineer-file-uploads/HVQz9rox1vbyMVNnaVOlrj9CTfB2/social-images/social-1772416710951-italia-kick-logo.webp";
+const SITE_NAME = "AI News";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80";
 const JSON_LD_ID = "seo-json-ld";
 
 function setMeta(property: string, content: string, isName = false) {
@@ -146,10 +145,10 @@ export const SEOHead = ({
 
     // Cleanup: restore defaults on unmount
     return () => {
-      document.title = `${SITE_NAME} — Italian Football News`;
-      setMeta("description", "The latest Italian football news. Serie A, Serie B and the best of Italian football.", true);
-      setMeta("og:title", `${SITE_NAME} — Italian Football News`);
-      setMeta("og:description", "The latest Italian football news. Serie A, Serie B and the best of Italian football.");
+      document.title = `${SITE_NAME} — Videos & articles from top AI sources`;
+      setMeta("description", "Stay updated with the latest in Artificial Intelligence. News, videos, and research from top sources.", true);
+      setMeta("og:title", `${SITE_NAME} — Latest AI Updates`);
+      setMeta("og:description", "Stay updated with the latest in Artificial Intelligence. News, videos, and research from top sources.");
       setMeta("og:image", DEFAULT_IMAGE);
       setMeta("og:type", "website");
       setJsonLd(null);

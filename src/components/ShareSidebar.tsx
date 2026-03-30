@@ -34,7 +34,7 @@ export function ShareSidebar({ url, title }: ShareSidebarProps) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-border text-muted-foreground hover:text-italia-green hover:border-italia-green">
+        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-border text-muted-foreground hover:text-primary hover:border-primary">
           <Facebook className="h-4 w-4" />
         </Button>
       </a>
@@ -52,8 +52,8 @@ export function ShareSidebar({ url, title }: ShareSidebarProps) {
         size="icon"
         className={`h-10 w-10 rounded-full border transition-colors ${
           copied
-            ? "border-italia-green text-italia-green"
-            : "border-border text-muted-foreground hover:text-italia-green hover:border-italia-green"
+            ? "border-primary text-primary"
+            : "border-border text-muted-foreground hover:text-primary hover:border-primary"
         }`}
         onClick={handleCopy}
         title="Copy link"

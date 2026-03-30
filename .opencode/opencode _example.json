@@ -1,0 +1,19 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "plugin": ["opencode-browser"],
+    "mcp": {
+      "supabase": {
+      "type": "remote",
+      "url": "https://mcp.supabase.com/mcp?project_ref=CHANGE",
+      "oauth": false,
+      "headers": {
+        "Authorization": "Bearer CHANGE"
+       }
+      },
+      "browsermcp": {
+      "type": "local",
+      "command": ["npx", "-y", "@browsermcp/mcp@latest"],
+      "enabled": true
+      }
+    }
+  }

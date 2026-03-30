@@ -1,14 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Moon, Sun, LogIn } from "lucide-react";
+import { Menu, X, Moon, Sun, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 
 const navItems = [
-  { label: "NEWS", href: "/", color: "italia-green" },
-  { label: "VIDEOS", href: "/videos", color: "italia-red" },
-  { label: "CLUBS", href: "/clubs", color: "italia-red" },
+  { label: "Feed", href: "/" },
+  { label: "Videos", href: "/?tab=video" },
 ];
 
 export function Header() {
@@ -16,88 +15,81 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
+  const toggleSearch = () => {
+    // Custom event for Index page to catch
+    window.dispatchEvent(new CustomEvent('toggle-search-hero'));
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-background pt-[env(safe-area-inset-top)]">
-      {/* Top bar */}
-      <div className="border-b border-border">
-        <div className="container flex h-16 items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-1 shrink-0">
-            <span className="text-2xl font-heading font-bold tracking-tight">
-              <span className="text-italia-green">It</span>
-              <span className="text-foreground">al</span>
-              <span className="text-italia-red">ia</span>
-              <span className="text-foreground"> Kick</span>
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-2 ml-auto">
-            <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground hover:text-foreground">
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
-              <Link to="/auth"><LogIn className="h-4 w-4 mr-1" /> Sign In</Link>
-            </Button>
+    <header className="w-full bg-background/80 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
+      <div className="max-w-[1920px] mx-auto px-global h-20 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform overflow-hidden">
+            <img src="/activynews-logo.png" alt="ActivyNews - AI" className="w-7 h-7 object-contain brightness-0 invert" />
           </div>
+          <span className="text-xl font-heading font-black tracking-tight text-foreground uppercase">
+            Activy AI News
+          </span>
+        </Link>
 
-          <div className="flex md:hidden items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => setMobileOpen(!mobileOpen)}>
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Category nav bar */}
-      <nav className="hidden md:block border-b border-border">
-        <div className="container flex items-center gap-8 h-11">
+        {/* Desktop Nav - Centered */}
+        <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.href;
+            const isActive = location.pathname === item.href || (item.href.includes('tab') && location.search.includes(item.href.split('?')[1]));
             return (
               <Link
                 key={item.label}
                 to={item.href}
                 className={cn(
-                  "text-xs font-nav font-semibold tracking-[0.15em] transition-colors py-3 border-b-2",
-                  isActive
-                    ? `text-${item.color} border-${item.color}`
-                    : "text-muted-foreground hover:text-foreground border-transparent"
+                  "text-[10px] font-black tracking-[0.2em] uppercase transition-all hover:text-primary",
+                  isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
                 {item.label}
               </Link>
             );
           })}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <Button 
+            onClick={toggleSearch} 
+            className="bg-primary hover:bg-bark-900 text-white px-3 h-10 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary/20"
+            title="Ask AI"
+          >
+            <Sparkles className="h-4 w-4 text-white" />
+          </Button>
+
+          <div className="h-4 w-px bg-bark-200 mx-2 hidden sm:block" />
+
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground hover:text-foreground">
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
+          
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={() => setMobileOpen(!mobileOpen)}>
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
-      </nav>
+      </div>
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <nav className="md:hidden border-b border-border px-4 py-3 flex flex-col gap-1 bg-background">
+        <nav className="md:hidden border-t border-border bg-background p-6 flex flex-col gap-4 animate-in slide-in-from-top-4 duration-300">
           {navItems.map((item) => (
             <Link
               key={item.label}
               to={item.href}
               onClick={() => setMobileOpen(false)}
               className={cn(
-                "px-3 py-2.5 text-xs font-nav font-semibold tracking-[0.15em]",
-                location.pathname === item.href
-                  ? `text-${item.color}`
-                  : "text-muted-foreground"
+                "text-sm font-black uppercase tracking-widest p-3 rounded-xl transition-colors",
+                location.pathname === item.href ? "bg-secondary text-primary" : "text-muted-foreground hover:bg-secondary/50"
               )}
             >
               {item.label}
             </Link>
           ))}
-          <Link
-            to="/auth"
-            onClick={() => setMobileOpen(false)}
-            className="px-3 py-2.5 text-xs font-nav font-semibold tracking-[0.15em] text-muted-foreground"
-          >
-            SIGN IN
-          </Link>
         </nav>
       )}
     </header>

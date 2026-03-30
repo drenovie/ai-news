@@ -28,3 +28,19 @@ export function getOptimizedImageUrl(
 
   return `https://wsrv.nl/?${params.toString()}`;
 }
+
+export function getFallbackImage(title: string): string {
+  const techIds = [
+    'photo-1677442136019-21780ecad995', // AI Robot
+    'photo-1620712943543-bcc4688e7485', // Circuitry
+    'photo-1485827404703-89b55fcc595e', // Future tech
+    'photo-1518770660439-4636190af475', // Hardware
+    'photo-1550751827-4bd374c3f58b', // Cyber security
+    'photo-1531297484001-80022131f5a1', // Laptop/Code
+  ];
+  
+  const index = Math.abs(title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % techIds.length;
+  const id = techIds[index];
+
+  return `https://images.unsplash.com/${id}?q=80&w=1200&auto=format&fit=crop`;
+}

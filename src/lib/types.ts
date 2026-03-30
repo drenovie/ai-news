@@ -1,13 +1,3 @@
-export interface Club {
-  id: string;
-  name: string;
-  shortName: string;
-  logo: string;
-  league: "serie_a" | "serie_b";
-  city: string;
-  color: string; // unique HSL color string e.g. "0 84% 50%"
-}
-
 export interface Article {
   id: string;
   slug: string;
@@ -16,7 +6,20 @@ export interface Article {
   content: string;
   source: string;
   sourceUrl: string;
+  sourceItemUrl?: string;
   imageUrl: string;
   publishedAt: string;
-  clubIds: string[];
+  guid?: string;
+}
+
+export interface Video {
+  id: string;
+  video_id: string;
+  slug: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  published_at: string;
+  channelName?: string;
+  channel_id: string;
 }
